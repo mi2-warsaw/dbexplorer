@@ -3,7 +3,7 @@
 ## Description
 
 ### Info
-The program was created for *Team project - development of data analysis system* course run by [Prof. P. Biecek](https://github.com/pbiecek).
+The program was created for *Team project - development of data analysis system* course run by [@pbiecek](https://github.com/pbiecek).
 
 
 ### Program description
@@ -15,12 +15,12 @@ It extracts basic or extended information such as:
 * data stats (top values, mean, quartiles etc.)
 * types of data and number of rows
 
+Generated report has a searching feature which allows to find tables or columns by names and exact values.
+
 #### Further information
 
-Full specification and more detailed description of summarization features can be found in `docs/Specyfikacja wymagań.pdf`.
+Full specification and more detailed description of summarization features (in Polish) can be found in [this file](https://github.com/ppollakr/dbexplorer/blob/master/docs/Specyfikacja%20wymaga%C5%84.pdf).
 
-
- 
 
 ## Installation
 
@@ -31,6 +31,8 @@ Full specification and more detailed description of summarization features can b
 
 
 ## Usage
+
+### Running
 
 The program can be run from command line with following arguments:
  
@@ -47,7 +49,7 @@ Mysql and Teradata),
 * -sc (--schema) — schema name (only postgres, default: public),
 * -d (--odbc_driver) — odbc driver name for Teradata connection (only TeraData).
 
-Examples:
+#### Example commands
 
 * Postgres: 
 
@@ -60,9 +62,24 @@ Examples:
 sample1 -pass dbc -o test.html -d 'Teradata Database ODBC
 Driver 16.20'`
 
+### Screenshots and live examples
+
+Examples of generated reports can be found [here](https://github.com/ppollakr/dbexplorer/blob/master/misc/example_reports).
+
+#### Basic report
+
+Live example is [here](https://cdn.rawgit.com/ppollakr/dbexplorer/68a9e4ae95159aa132f8156386770aa0e7d19c9c/misc/example_reports/basic/mysql_employees.html)
+
+![basic report screenshot](https://github.com/ppollakr/dbexplorer/blob/master/misc/screenshots/basic.png)
+
+#### Extended report
+
+Live example is [here](https://cdn.rawgit.com/ppollakr/dbexplorer/68a9e4ae95159aa132f8156386770aa0e7d19c9c/misc/example_reports/extended/mysql_employees_extended.html)
+
+![extended report screenshot](https://github.com/ppollakr/dbexplorer/blob/master/misc/screenshots/extended.png)
+
 ## Authors
 
 * Karol Prusinowski
 * Paweł Pollak
 * Karol Szczawiński
-
