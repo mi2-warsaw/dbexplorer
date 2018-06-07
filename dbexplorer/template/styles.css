@@ -1,0 +1,114 @@
+.sweet-alert {
+	width: 650px !important;
+	margin-left: -325px !important;
+}
+
+.col-lg-12 {
+	min-height: 500px;
+}
+
+input {
+	min-height: 35px;
+	vertical-align: bottom;
+}
+
+.form-control {
+	display: inline-block;
+	max-width: 200px;
+}
+
+.btn-link {
+	text-decoration: none !important;
+	color: #0c0a0a;
+	white-space: normal;
+}
+
+.btn-link:hover {
+	color: #cec9c9;
+}
+
+.table {
+	color: #555252;
+}
+
+.normal-text {
+	color: #555252;
+	text-align: left;
+	padding: 10px;
+}
+
+.footer {
+	text-align: right;
+	color: white;
+	font-size: 11px;
+	padding: 2px 8px;
+}
+
+.footer a {
+	color: #AAAAAA;
+}
+
+.footer a:hover {
+	color: #888888;
+}
+
+.checkbox {
+	padding-left: 20px;
+	cursor: pointer;
+	margin-bottom: 0;
+	font-size: 1.25rem;
+	font-weight: 300;
+}
+
+.checkbox input {
+	min-height: 26px;
+	margin-right: 8px;
+}
+
+.navbar .title {
+	color: white;
+	text-align: center;
+	margin: auto;
+}
+
+.navbar .help-button {
+	float: right;
+	background-color: white;
+	width: 20px;
+	height: 25px;
+	text-align: center;
+}
+
+.container .content {
+	background-color: #555252;
+}
+
+.content .search-panel {
+	color: #ffffff;
+	padding: 20px;
+}
+
+.content .search-panel span {
+	padding-right: 5px;
+}
+
+.content .results {
+	padding: 20px; 
+	color: white; 
+	text-align: center;
+}
+
+select {
+	min-height: 35px;
+}
+
+.column-table {
+	overflow-x: auto;
+	padding-top: 12px;
+}
+
+@media only screen and (min-width: 1500px) {
+    .container {
+        max-width: 1400px;
+    }
+}

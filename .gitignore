@@ -1,0 +1,5 @@
+*.idea
+dbexplorer/out.html
+
+__pycache__/
+*.py[cod]

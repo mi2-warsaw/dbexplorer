@@ -1,0 +1,5 @@
+include dbexplorer/template/*.js
+include dbexplorer/template/*.css
+include dbexplorer/template/*.html
+include README.md
+include LICENSE
