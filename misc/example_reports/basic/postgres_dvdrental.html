@@ -1,0 +1,702 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADdcAAA3XAUIom3gAAAAHdElNRQfiBgUXMhGxb9TNAAABBUlEQVQoz3XRu0uCARQF8J8lRBDUFJoG1eYkRZu0NgQ1RC1NNgQKzW1NDQ3RVFtLDrYUDfVfSGSbuPSgqGgqAg3pNXz6IWnnLhfOuffcR0SAuEXzxo3g0Y1zp56EyKv5+RM1+RY920G2YpYepPyHVMu/1LW+JE4EB968WDbdVnvh2LBBa1Hc2XLjSMGHL/TqE5MzbjNQJ1S7WlQlAot9D4asGG2zuHfkVdJ6FN+2Xdrx6Uc/aiKiVk3ZC9STGmHbd+9h3jAZ3CEjq9JsPWCgmVVkZYgiLWvXhrQJSTy4dmVGwWGgnQuvX1ZUVA4/M9eaOafesWRdjmBNiFmyYEwcT26dOfEMv03yfDjiLjpIAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE4LTA2LTA1VDIzOjUwOjE3KzAyOjAwqkhdcAAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOC0wNi0wNVQyMzo1MDoxNyswMjowMNsV5cwAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC"/>
+	<title>Database Explorer</title>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	 crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+	<style type="text/css">
+		.col-lg-12 {
+	min-height: 500px;
+}
+
+input {
+	min-height: 35px;
+	vertical-align: bottom;
+}
+
+.form-control {
+	display: inline-block;
+	max-width: 200px;
+}
+
+.btn-link {
+	text-decoration: none !important;
+	color: #0c0a0a;
+	white-space: normal;
+}
+
+.btn-link:hover {
+	color: #cec9c9;
+}
+
+.table {
+	color: #555252;
+}
+
+.normal-text {
+	color: #555252;
+	text-align: left;
+	padding: 10px;
+}
+
+.footer {
+	text-align: right;
+	color: white;
+	font-size: 11px;
+	padding: 2px 8px;
+}
+
+.footer a {
+	color: #AAAAAA;
+}
+
+.footer a:hover {
+	color: #888888;
+}
+
+.checkbox {
+	padding-left: 20px;
+	cursor: pointer;
+	margin-bottom: 0;
+	font-size: 1.25rem;
+	font-weight: 300;
+}
+
+.checkbox input {
+	min-height: 26px;
+	margin-right: 8px;
+}
+
+.navbar .title {
+	color: white;
+	text-align: center;
+	margin: auto;
+}
+
+.navbar .help-button {
+	float: right;
+	background-color: white;
+	width: 20px;
+	height: 25px;
+	text-align: center;
+}
+
+.container .content {
+	background-color: #555252;
+}
+
+.container {
+	-webkit-box-shadow: 0px 0px 75px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 75px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 75px 0px rgba(0,0,0,0.75);
+    padding: 0;
+}
+
+.content .search-panel {
+	color: #ffffff;
+	padding: 20px;
+}
+
+.content .search-panel span {
+	padding-right: 5px;
+}
+
+.content .results {
+	padding: 20px; 
+	color: white; 
+	text-align: center;
+}
+
+select {
+	min-height: 35px;
+}
+
+.column-table {
+	overflow-x: auto;
+	padding-top: 12px;
+}
+
+@media only screen and (min-width: 1500px) {
+    .container {
+        max-width: 1400px;
+    }
+}
+
+.icon {
+  float: left;
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.icon.numeric {
+	background: url('data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjMycHgiIGhlaWdodD0iMzJweCIgdmlld0JveD0iMCAwIDc5LjUzNiA3OS41MzYiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDc5LjUzNiA3OS41MzY7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8cGF0aCBkPSJNNi43MDMsMzcuNTM2bC00LjM5MSw0LjQ1M0wwLDM4Ljk4M2w3LjA2My02LjQ0MmgzLjU5M3YyNS42MTRINi43MDNWMzcuNTM2eiBNMTUuNjgsNTUuNjE4ICAgYzAtMC43NzYsMC4yNTktMS40MzksMC43NzQtMS45ODhjMC41MjEtMC41NDksMS4xMzktMC44MjgsMS44NjctMC44MjhjMC43MDQsMCwxLjMxNSwwLjI3OSwxLjg0NiwwLjc5NyAgIGMwLjUyOCwwLjUyMywwLjc5NSwxLjE4MiwwLjc5NSwxLjk0N2MwLDAuNzcxLTAuMjYyLDEuNDM5LTAuNzc0LDEuOTg4Yy0wLjUyLDAuNTU1LTEuMTQyLDAuODM5LTEuODY3LDAuODM5ICAgYy0wLjM1LDAtMC42OTQtMC4wNzctMS4wMDItMC4yMTdjLTAuMzIzLTAuMTQ2LTAuNjA1LTAuMzQyLTAuODU0LTAuNThjLTAuMjM4LTAuMjQ5LTAuNDM1LTAuNTM5LTAuNTY3LTAuODcgICBDMTUuNzU1LDU2LjM3OSwxNS42OCw1Ni4wMDEsMTUuNjgsNTUuNjE4eiBNMjUuOTcxLDUxLjZsMTIuOTYzLTEzLjc2MWMwLjM3My0wLjQxNSwwLjc2OS0wLjg1LDEuMTg0LTEuMzE1ICAgYzAuNDAzLTAuNDY2LDAuNzczLTAuOTY2LDEuMTA3LTEuNDY2YzAuMzI0LTAuNTMzLDAuNjAxLTEuMDYzLDAuODE4LTEuNjQxYzAuMjE4LTAuNTU0LDAuMzI5LTEuMTU4LDAuMzI5LTEuNzc2ICAgYzAtMC43NTktMC4xMjQtMS40MzUtMC40MDQtMi4wMTJjLTAuMjU0LTAuNTg4LTAuNjA1LTEuMDkzLTEuMDUxLTEuNDk5Yy0wLjQzNi0wLjQxNS0wLjk1My0wLjczOC0xLjUzLTAuOTY2ICAgYy0wLjU4NS0wLjIxMi0xLjIwNC0wLjMyOS0xLjg2Ny0wLjMyOWMtMS40MTEsMC0yLjU2OCwwLjQ0NS0zLjQ3OSwxLjM1MmMtMC45MjEsMC44ODYtMS40NTgsMi4xLTEuNjU5LDMuNjEybC01LjkzNS0wLjUyMSAgIGMwLjEyNS0xLjY4NSwwLjUtMy4xODcsMS4xMDgtNC40NzljMC42MTEtMS4yNzksMS40MTEtMi4zNTYsMi4zNzctMy4yMjZjMC45ODYtMC44NDYsMi4xMS0xLjUwOSwzLjQxLTEuOTU1ICAgYzEuMjc2LTAuNDQ1LDIuNjc3LTAuNjczLDQuMTc4LTAuNjczYzEuNTEsMCwyLjkyMSwwLjIxNyw0LjIyNiwwLjYzOWMxLjMwNSwwLjQzNSwyLjQ0NCwxLjA3NywzLjQwNywxLjkxMSAgIGMxLDAuODQ3LDEuNzUsMS45MjQsMi4zMjUsMy4yMjljMC41NTQsMS4zMTUsMC44MzQsMi44MzgsMC44MzQsNC41OTljMCwyLjMxMi0wLjQ3Nyw0LjMtMS40MzUsNS45NjUgICBjLTAuOTU4LDEuNjg2LTIuMTksMy4yOC0zLjcwMiw0Ljc5MkwzMi44NTgsNTIuNTc0aDE1LjQ1NXY1LjU5MkgyNS45NzFWNTEuNnogTTUzLjM0NSw1NS42MThjMC0wLjc3NiwwLjI2LTEuNDM5LDAuNzc3LTEuOTg4ICAgYzAuNTA4LTAuNTQ5LDEuMTM5LTAuODI4LDEuODU0LTAuODI4czEuMzI2LDAuMjc5LDEuODY5LDAuNzk3YzAuNTI4LDAuNTIzLDAuNzcxLDEuMTgyLDAuNzcxLDEuOTQ3ICAgYzAsMC43NzEtMC4yNDgsMS40MzktMC43NjYsMS45ODhjLTAuNTE5LDAuNTU1LTEuMTQsMC44MjktMS44NzUsMC44MjljLTAuMzQyLDAtMC42OTktMC4wNzgtMC45OTktMC4yMTggICBjLTAuMzI2LTAuMTM1LTAuNjAxLTAuMzMxLTAuODUtMC41NjljLTAuMjM4LTAuMjQ5LTAuNDM1LTAuNTM5LTAuNTY0LTAuODdDNTMuNDE4LDU2LjM3OSw1My4zNDUsNTYuMDAxLDUzLjM0NSw1NS42MTh6ICAgIE02OS40NDksNDIuODQ5aDEuMDI1YzAuNTY5LDAsMS4xMTgtMC4wMzEsMS42NTctMC4xMTRjMC41MzMtMC4wNzIsMS4wMS0wLjIyOCwxLjQzNC0wLjQ3N2MwLjQzNi0wLjIyNSwwLjc3MS0wLjU4MiwxLjA0MS0xLjAzOCAgIGMwLjI2NS0wLjQ2MSwwLjM4My0xLjA2NiwwLjM4My0xLjg0OWMwLTAuOTg5LTAuMzExLTEuNzk0LTAuOTIxLTIuNDIzYy0wLjYxMS0wLjYzMi0xLjQwOS0wLjk0LTIuNDAzLTAuOTQgICBjLTAuNzcxLDAtMS41MDEsMC4yNDktMi4xMDcsMC43NDljLTAuNjI2LDAuNDk3LTEuMDgyLDEuMTk0LTEuMzYxLDIuMDg0bC00LjE5NC0xLjIzYzAuMjctMC45NDUsMC42NDItMS43NjEsMS4xMTgtMi40NjcgICBjMC40ODctMC42OTQsMS4wNTctMS4yNjEsMS43Mi0xLjcwNmMwLjY2Mi0wLjQ1NiwxLjM4OC0wLjc3NCwyLjE3NS0wLjk5N2MwLjc4MS0wLjIxOCwxLjYxNS0wLjMyOSwyLjQ3NS0wLjMyOSAgIGMxLDAsMS45NjgsMC4xNDMsMi44NjksMC40MzZjMC45MTEsMC4yOTUsMS42ODMsMC43MiwyLjM4MiwxLjI4MWMwLjY4NCwwLjU2NywxLjIxMiwxLjI3NCwxLjYyNiwyLjEzMyAgIGMwLjQxNCwwLjg1NywwLjYxLDEuODU0LDAuNjEsMi45OGMwLDEuMzc3LTAuMzUyLDIuNTk3LTEuMDU2LDMuNjc0Yy0wLjcwNCwxLjA2Mi0xLjY3OCwxLjc4MS0yLjkzMiwyLjA5OHYwLjA5MyAgIGMxLjQ3NywwLjIzOCwyLjYzMSwwLjk0MiwzLjM5NywyLjEwM2MwLjc2NywxLjEzOSwxLjE0OSwyLjUyNywxLjE0OSw0LjEyMWMwLDEuMjMyLTAuMjA3LDIuMzItMC42NDMsMy4yNTIgICBjLTAuNDI0LDAuOTQzLTEuMDA0LDEuNzItMS43MjksMi4zNjFjLTAuNzI2LDAuNjQzLTEuNTY0LDEuMTE5LTIuNTE3LDEuNDQ1Yy0wLjk2NCwwLjMyNi0xLjk1OCwwLjUwMi0yLjk5MywwLjUwMiAgIGMtMC45NjMsMC0xLjg3NS0wLjExMy0yLjc0NC0wLjMzMWMtMC44NS0wLjIyOC0xLjYyNi0wLjU5MS0yLjMyLTEuMDc3Yy0wLjcwOS0wLjQ3Ny0xLjI4NC0xLjA5OC0xLjgxNy0xLjg2NCAgIGMtMC40OTItMC43NTYtMC44NzUtMS42NjctMS4xNDUtMi43MzRsNC4yMjYtMS4yMjJjMC4yNDMsMS4wNjYsMC42NjgsMS44NzQsMS4yODksMi40NjVjMC42MDUsMC41NjQsMS40NDUsMC44NywyLjUxMiwwLjg3ICAgYzAuNTI4LDAsMS4wMi0wLjExNCwxLjQ5Ni0wLjMwNmMwLjQ4MS0wLjE5MSwwLjg5MS0wLjQ2NywxLjI1My0wLjgwM2MwLjM1Ny0wLjM1MywwLjY0Ny0wLjc3NywwLjg1NC0xLjI2NCAgIGMwLjIwNy0wLjQ5NywwLjMxNi0xLjA0NiwwLjMxNi0xLjY1NmMwLTAuODA5LTAuMTUtMS40ODEtMC40NzctMi4wMWMtMC4zMjYtMC41MTgtMC43My0wLjkxMS0xLjIxNy0xLjE5MSAgIGMtMC40OTctMC4yNzktMS4wNDYtMC40NjYtMS42NTctMC41NTljLTAuNjExLTAuMDk0LTEuMjEyLTAuMTM1LTEuODIyLTAuMTM1aC0wLjk1M1Y0Mi44NDlMNjkuNDQ5LDQyLjg0OXoiIGZpbGw9IiMwMDAwMDAiLz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K') no-repeat; 
+	margin-top: -3px;
+}
+
+.icon.character {
+	background: url('data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjMycHgiIGhlaWdodD0iMzJweCIgdmlld0JveD0iMCAwIDI3OS4wNjMgMjc5LjA2MyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMjc5LjA2MyAyNzkuMDYzOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPGc+CgkJPHBhdGggZD0iTTY2Ljk2OCw5Ny4zNTNjLTMuOTI4LTAuMTcxLTguOTYxLDAuMjEyLTE1LjExMiwxLjE0NWMtNi4xNDQsMC45NDgtMTIuMDc4LDMuMDc2LTE3Ljc5NSw2LjQwNSAgICBjLTUuNzI3LDMuMzMtMTAuNjcyLDguMjg1LTE0Ljg1NiwxNC44NTZjLTQuMTc5LDYuNTcxLTYuMjczLDE1LjQ4OC02LjI3MywyNi43NjFjMCw4LjcwNCwxLjI4NCwxNiwzLjg0NSwyMS44ODggICAgczYuMDU2LDEwLjU4OSwxMC40OTMsMTQuMDljNC40MzgsMy40OTUsOS41NTksNS44ODgsMTUuMzY2LDcuMTY2YzUuODA1LDEuMjg0LDExLjk1MSwxLjY2OCwxOC40NDIsMS4xNDkgICAgYzUuNDY1LTAuNTA3LDEwLjU4NC0xLjYyLDE1LjM2Ni0zLjMyOWM0Ljc3Ny0xLjcwOSw5LjU1OS00LjQzOCwxNC4zMzgtOC4xOTFjMS43MDEsMy41ODMsMy43NTQsNi40ODgsNi4xNDksOC43MDQgICAgYzIuMzg3LDIuMjIyLDUuMjg3LDMuMzM1LDguNzAyLDMuMzM1YzEuNzA5LDAsMy41NDItMC41MTksNS41MDQtMS41MzhjMS45NjctMS4wMjUsMy44MDYtMi4zOTMsNS41MDktNC4xMDIgICAgYzEuNzA2LTEuNzAzLDMuMDI3LTMuNTM2LDMuOTcyLTUuNTA5YzAuOTM4LTEuOTYzLDEuMzE1LTMuODc5LDEuMTU1LTUuNzU5bC0wLjI2NC0wLjUwN2MtMS4zNy02LjE0Ni0yLjMwMi0xMS4zOTctMi44MjItMTUuNzUyICAgIGMtMC41MDctNC4zNTQtMC43NjQtOS4wOTMtMC43NjQtMTQuMjE0YzAtMy4yNDIsMC02LjczNywwLTEwLjQ5NmMwLTMuOTI1LDAuMDg1LTcuNTk3LDAuMjU2LTExLjAxNCAgICBjMC4xNjgtMi4yMjIsMC4yNTQtNC4zNTUsMC4yNTQtNi40YzAtMi4yMTYsMC00LjI2NywwLTYuMTQ2di0yLjA0NWMwLTIuNTYzLTAuMDM2LTUuNzU4LTAuMTIyLTkuNjExICAgIGMtMC4wOTYtMy44MzctMC42NDItNy44MDktMS42Ny0xMS45MDRjLTEuMDI1LTQuMDk2LTIuNjEtOC4xMDQtNC43MzUtMTIuMDM5Yy0yLjEzNi0zLjkyNS01LjE2Ni03LjQyNS05LjA4OC0xMC41MDEgICAgYy0zLjkzLTMuMDcxLTguOTI0LTUuNTEtMTQuOTgtNy4yOTZjLTYuMDY2LTEuNzkyLTEzLjQ1My0yLjQyOS0yMi4xNTQtMS45MTZjLTUuOTgxLDAuMzQyLTExLjYxNywxLjIzMi0xNi45MDQsMi42ODggICAgYy01LjI4OSwxLjQ0NC0xMC4wNzQsMy40MDctMTQuMzM1LDUuODgyYy00LjI3NCwyLjQ4LTcuODU4LDUuMzg2LTEwLjc2LDguNzFjLTIuOTA1LDMuMzI5LTQuNzgyLDcuMDQyLTUuNjMxLDExLjEzOCAgICBjMC4xNjYsMi4zOTMsMC40MjQsMy43NTQsMC43NjksNC4xMDJjMC44NTQsMS44NzQsMS44NzcsMy45MywzLjA3MSw2LjE0NmMxLjE5OSwyLjIxNiwyLjgyMiwzLjMyNCw0Ljg2OCwzLjMyNGgwLjI1MyAgICBjMS4wMzEsMC4xNjYsMi40NzgsMC4yMTgsNC4zNTUsMC4xMjRjMS44ODItMC4wODMsMy40Mi0wLjQ3MSw0LjYxNC0xLjE0OWMwLjY3OC0wLjM0MiwxLjM1Ni0wLjgxMywyLjA0NS0xLjQwOCAgICBjMC42NzgtMC41OTYsMS4zNjItMS4xNiwyLjA1My0xLjY2N2MyLjA0Ni0xLjcwOCw0LjgxMy0zLjU4Myw4LjMxOS01LjYyOGMzLjQ5NS0yLjA1MSw5LjA4Ny0zLjMzLDE2Ljc3Ny0zLjg0OCAgICBjNC43NzctMC4xNzEsOC42NTgsMC4yNTQsMTEuNjU0LDEuMjc5YzIuOTgsMS4wMjUsNS4yODcsMi40MzQsNi45MTYsNC4yMjVjMS42MjMsMS43OTIsMi43MjYsMy44MDEsMy4zMjQsNi4wMTcgICAgYzAuNTkzLDIuMjE2LDAuODk2LDQuMzU0LDAuODk2LDYuNGMtMi4zOS0wLjg1NC01LjI0OC0xLjU3NC04LjU3Mi0yLjE3NUM3Ni4wNTUsOTguMTYxLDcxLjkxNiw5Ny42OTUsNjYuOTY4LDk3LjM1M3ogICAgIE04Ny43MTEsMTMwLjg5N2MwLjMzOSwwLjg2LDAuNTkzLDEuOTIxLDAuNzc0LDMuMjA2YzAuMTYzLDEuMjczLDAuMjU0LDIuNjg4LDAuMjU0LDQuMjI1YzAsMi43MjktMC4zNSw1LjY3LTEuMDI4LDguODM5ICAgIGMtMC42ODQsMy4xNTgtMi4xMzYsNi4xODgtNC4zNTUsOS4wODdjLTIuOTEsMi4yMjItNi4xODgsNC4wOTYtOS44NjIsNS42MjljLTMuNjc0LDEuNTM4LTcuODk0LDIuMzEtMTIuNjczLDIuMzEgICAgYy02LjE0OSwwLTEwLjk3LTEuNjY3LTE0LjQ2NS00Ljk5N2MtMy41MDMtMy4zMjQtNS4yNTMtNy44MDktNS4yNTMtMTMuNDQyYzAtNS44MDUsMi42NDYtMTAuODg0LDcuOTQzLTE1LjIzOSAgICBjNS4yOTItNC4zNSwxMi4yMDUtNi41MjQsMjAuNzQ0LTYuNTI0YzMuNTg4LDAsNi44NjYsMC42ODQsOS44NTYsMi4wNDVDODIuNjMxLDEyNy40MDIsODUuMzE0LDEyOS4wMjIsODcuNzExLDEzMC44OTd6IiBmaWxsPSIjMDAwMDAwIi8+CgkJPHBhdGggZD0iTTEzMy44MywxMjguNDc5YzEuMDI1LDAuNjg0LDEuOTkzLDEuMTUsMi45MTMsMS40MjRjMC43NjQsMC45MzIsMS43NDIsMS41NDgsMi45MzEsMS44NjQgICAgYzEuMTkzLDAuMzA2LDIuNDEsMC4zODQsMy42ODUsMC4yMDhjMS4yNDctMC4xNzYsMi40OTUtMC41NywzLjc0OC0xLjIwN2MxLjIzOC0wLjYxNiwyLjIyNy0xLjQzNSwyLjk3My0yLjQyOSAgICBjMS44NTQsMy43OTEsNC40MTIsNi45MDIsNy42ODUsOS4zMjZjMy4yNzIsMi40MjMsNy4zNjgsNC43MzcsMTIuMjg3LDYuOTQ4YzYuMjgxLDIuODEyLDEyLjY3MSw0LjIwNSwxOS4xOSw0LjE3NCAgICBjNi41Mi0wLjAyNSwxMi43MzMtMS4yNzMsMTguNjQ2LTMuNzIzYzUuODkzLTIuNDU1LDExLjI4OC02LjA0OCwxNi4xNTYtMTAuODIyYzQuODc3LTQuNzU5LDguNzY2LTEwLjQwMywxMS42OTEtMTYuOTI4bDIuMTU0LTQuOCAgICBjMi45ODItNi42MzksNC41NDctMTMuMTg4LDQuNzAyLTE5LjYzYzAuMTQ1LTYuNDMyLTAuODYtMTIuNDIzLTMuMDI0LTE3Ljk3OWMtMi4xNTktNS41NjItNS40MDYtMTAuNDQ0LTkuNzE0LTE0LjY3NSAgICBjLTQuMzE4LTQuMjIxLTkuNDE0LTcuMzU4LTE1LjI5Ni05LjQwOWMtNC4xMDItMS40MDMtOC4xNjEtMi4wNzEtMTIuMTY5LTIuMDI0Yy00LjAxOSwwLjA1Ny03LjM5OSwwLjM0Mi0xMC4xNTksMC44ODYgICAgYzAuNTQzLTEuNTQzLDEuMTM5LTMuMDQsMS44MDItNC41MjFjMC42NjMtMS40NzYsMS4zNTItMy4wMDksMi4wNzYtNC42MTRsNS42MjktMTIuNTU3YzAuOTk0LTIuMjE2LDIuMjA2LTQuNjYsMy42My03LjM0OCAgICBjMS40MjQtMi42ODMsMi42NS00LjgzNiwzLjY3MS02LjQ0MWMwLjU2NC0wLjkyNywxLjI0My0xLjk1OCwyLjA0Ni0zLjA3NmMwLjE5MS0xLjA5OC0wLjAzNy0yLjMxNC0wLjY5OS0zLjY0NiAgICBjLTAuNjYzLTEuMzI1LTEuMzY3LTIuMzA0LTIuMTEzLTIuOTQ2Yy0xLjEzNC0xLjA4Ny0yLjY4OC0yLjA4Ny00LjY1NC0yLjk2N2MtMS45NjgtMC44OC00LjEwNi0xLjQwMy02LjQtMS41NDMgICAgYy0yLjMwNS0wLjE0LTQuNjE0LDAuMy02LjkxOCwxLjMzMWMtMi4zMjUsMS4wMzEtNC4yNTIsMi45NjctNS44MjYsNS44MTVjLTAuOTYzLDEuNDkxLTIuNDU0LDQuMjItNC40NDIsOC4yMDIgICAgYy0yLjAxNSwzLjk3Ny00LjI3Nyw4LjYxNi02Ljc5NCwxMy45MDhjLTIuNTMxLDUuMjk4LTUuMjA5LDExLjAyLTguMDI1LDE3LjE0Yy0yLjgyOCw2LjEzMS01LjU1NywxMi4xNDgtOC4yMDgsMTguMDQ2ICAgIGMtMS4xMDMsMi40NzYtMi41MDEsNS40MjItNC4xOTksOC44ODFjLTEuNjk4LDMuNDU0LTMuNTI2LDcuMDMxLTUuNDc5LDEwLjczOWMtMi4xODUsNC4xOTktNC4zMDgsOC4zNzMtNi40LDEyLjUzMSAgICBjLTIuMDkyLDQuMTY4LTMuODUzLDcuODQ1LTUuMjg5LDExLjA1Yy0wLjY2MywxLjQ3Ni0xLjIwNCwyLjc0NC0xLjYwOCwzLjgyN2MtMC40MDQsMS4wNzctMC43NjksMi4xMzMtMS4wODcsMy4xNjkgICAgYy0xLjM0MSwyLjY1MS0yLjA3MSw0Ljg3Ny0yLjIxNiw2LjY1OWMtMC4xMzIsMS43OTIsMC4wOTYsMy4yNjIsMC42ODMsNC40MTdDMTMxLjk5NywxMjYuODg0LDEzMi43OTcsMTI3LjgwMSwxMzMuODMsMTI4LjQ3OXogICAgIE0xNzMuMjc3LDg5Ljk2OWwwLjUwMi0xLjExNGMxLjI2OS0yLjgyMiwyLjY0MS01LjM5LDQuMTA2LTcuNjk0YzEuNDgtMi4yODksMy4wNzYtNC41MzEsNC43OTUtNi43MjcgICAgYzQuMTM3LTEuOTY4LDguMTgyLTMuMzEzLDEyLjEwMi0zLjk4N2MzLjkzLTAuNjc4LDcuNjc5LTAuMjIzLDExLjI0NiwxLjM4M2MzLjk0NiwxLjc2MSw3LjA5NSw0LjUxNiw5LjQ5Nyw4LjI0OSAgICBjMi4zOTcsMy43MzMsMi44NTgsOC4zNzMsMS40MDMsMTMuOTM0YzAuMjAyLDAuNTI4LDAuMjI4LDEuMzYyLDAuMTA0LDIuNDc1Yy0wLjE0LDEuMTI0LTAuMzk4LDIuMzc3LTAuNzkyLDMuNzQ5ICAgIGMtMC4zODksMS4zODgtMC45MjcsMi44MTItMS41ODUsNC4yNzdjLTAuNjY4LDEuNDgtMS4yNzMsMi44MzctMS44MjgsNC4wNjRjLTMuNSw3LjE1MS04LjI5LDEyLjEzOC0xNC4zNTQsMTQuOTU1ICAgIGMtNi4wNjgsMi44MjItMTIuMjQxLDIuODMzLTE4LjUyMSwwLjAxNmMtMy4yMDYtMS40NS01LjY2LTMuNjE1LTcuMzc5LTYuNTNjLTEuNzI5LTIuOTE1LTMuMzE0LTUuODg4LTQuNzctOC45MDZsLTAuMDk5LTAuMjU5ICAgIEMxNjguNTk2LDEwMi4yMDUsMTcwLjQ3MSw5Ni4yNCwxNzMuMjc3LDg5Ljk2OXoiIGZpbGw9IiMwMDAwMDAiLz4KCQk8cGF0aCBkPSJNMjE4LjE5NywxOTEuODY0Yy01LjYyOSwxLjU0My0xMC45NzMsNC4wNDQtMTYuMDM2LDcuNTM0Yy01LjA1NSwzLjQ5LTkuNDA5LDcuODcxLTEzLjA3LDEzLjEzNyAgICBjLTMuNjQ2LDUuMjU2LTYuMjE5LDEwLjY5My03LjY3NCwxNi4zMTZjLTEuNDYsNS42MjMtMS44MjIsMTEuMTM4LTEuMDYyLDE2LjUyOGMwLjczLDUuMzk2LDIuNTg0LDEwLjQ4NSw1LjU0NiwxNS4yNjYgICAgYzIuOTQ2LDQuNzg0LDcuMDY4LDguODcsMTIuMzkyLDEyLjI3MWMzLjI5OCwyLjEyMyw2LjkwNywzLjcwOCwxMC44MjcsNC43NDNjMy45MzYsMS4wNDEsNy43MzYsMS40OTcsMTEuNDQzLDEuMzg4ICAgIGMzLjY5Ny0wLjEyNCw3LjAwMS0wLjg4NSw5LjktMi4yOTljMi45LTEuNDA4LDQuOTg3LTMuNTExLDYuMjU2LTYuMjc1YzAuNzQtMS41MjgsMC45NzQtMy4yMjcsMC43MDQtNS4wODUgICAgYy0wLjI4LTEuODc1LTEuMjAxLTMuNDE4LTIuNzg2LTQuNjU1Yy0wLjgzOS0wLjY1Mi0xLjY5My0xLjA1Ny0yLjU1My0xLjIxMmMtMC44NjQtMC4xNC0yLjE3LTAuMTQ1LTMuOTMtMC4wMTYgICAgYy0zLjAxNCwwLjE5Ny02LjE3MywwLjA5OS05LjQ3MS0wLjI5Yy0zLjI5OS0wLjM5OC02LjAwMi0xLjI3My04LjEwNC0yLjYwOWMtMi42ODItMS45NTItNC43MzctNC4yMy02LjE2Mi02LjgzNSAgICBjLTEuNDI0LTIuNjE1LTIuMjI3LTUuNDIyLTIuNDIzLTguNDRjLTAuMjE4LTMuMDE0LDAuMjMyLTYuMTMxLDEuMzE1LTkuMzM3YzEuMDc3LTMuMjE1LDIuODI3LTYuMzU4LDUuMjI5LTkuNDQ0ICAgIGMyLjA0LTIuNjEsNC40NTMtNC45NzcsNy4yMzQtNy4wODljMi43Ny0yLjExMiw1LjYwNy0zLjcwNyw4LjQ1NS00Ljc3NGMyLjg2OS0xLjA3MSw1LjY0OS0xLjYsOC4zNTctMS42ICAgIGMyLjY5MywwLjAxLDUuMDc1LDAuODA4LDcuMTI1LDIuNDEzYzEuODcsMS40NTUsMy4wODcsMy4zMTMsMy42NjEsNS41NjZjMC41NzUsMi4yNDcsMC44OTYsNC42NzYsMC45NTgsNy4yOTEgICAgYy0wLjczNSwxLjUyNy0wLjY3MywzLjA3NSwwLjE5Nyw0LjY1NGMwLjg2OSwxLjU4LDEuODY0LDIuODEyLDIuOTk4LDMuNjkyYzAuMzY3LDAuMjksMS4yMDEsMC41NjQsMi40OSwwLjgyMyAgICBjMS4zMDUsMC4yNjQsMi43NDUsMC4zNzgsNC4zNTUsMC4zNDdjMS41OTUtMC4wMjUsMy4xNjktMC4yNTksNC43MjItMC43MDRjMS41NDktMC40MzUsMi44MzgtMS4yMzIsMy44NzktMi4zNzcgICAgYzEuODA3LTEuOSwyLjgyNy00LjM3LDMuMDg2LTcuMzk5YzAuMjY1LTMuMDI5LTAuMTg3LTYuMTk4LTEuMzU2LTkuNTE4Yy0xLjE4MS0zLjMxOC0yLjk2Mi02LjU1NS01LjM4Ni05LjcxOSAgICBjLTIuNDE4LTMuMTY0LTUuMzU0LTUuODgzLTguODQ0LTguMTU1Yy00LjY4MS0zLjA1Ni05LjgyOC00Ljg4OS0xNS40MjEtNS41MUMyMjkuNDU0LDE4OS44NzEsMjIzLjgyNiwxOTAuMzI2LDIxOC4xOTcsMTkxLjg2NHoiIGZpbGw9IiMwMDAwMDAiLz4KCQk8cGF0aCBkPSJNMTQxLjc2MywxOTAuOTQ3Yy0wLjI1My0wLjAzLTAuNTM4LTAuMDQxLTAuODQ5LTAuMDQxYy0wLjk0OCwwLTEuODk3LDAtMi44NDYsMGMtMC45NSwwLTEuODUxLDAuMTA4LTIuNzA1LDAuMzI2ICAgIGMtMC44NTQsMC4yMjMtMS42MTEsMC42MzItMi4yNzMsMS4yMzJjLTAuNjYzLDAuNjAxLTEuMTg4LDEuNTA3LTEuNTU5LDIuNzAzYy0wLjMxOCwwLjUwMi0wLjU2LDAuOTMyLTAuNzE3LDEuMjg0ICAgIGMtMC4xNTgsMC4zNDItMC4xNzYsMC44MzktMC4wNDYsMS40NmMwLjM3NSwxLjUyMiwxLjAyMiwyLjU0OCwxLjk0NCwzLjA4NmMwLjkxMSwwLjU0NCwyLjAzNywwLjgwOSwzLjM2MywwLjgwOSAgICBjMC44ODUsMCwxLjczNywwLDIuNTYxLDBjMC44OCwwLDEuNzY2LTAuMDMxLDIuNjUxLTAuMDk0YzAuODg1LTAuMDYyLDEuNzM5LTAuMTA4LDIuNTU4LTAuMTQgICAgYzAuODE4LTAuMDI2LDEuNjc4LTAuMDQ3LDIuNTU4LTAuMDQ3aDEuMzI2djUuMzEzYzAsMC4xODYsMCwwLjQzOSwwLDAuNzVjMCwwLjI1OS0wLjAyNiwwLjU0NC0wLjA5NCwwLjg1NCAgICBjLTAuMDYyLDAuNTA4LTAuMTEzLDEuMDMtMC4xNDUsMS41NjNjLTAuMDMxLDAuNTM5LTAuMDQyLDEuMTUtMC4wNDIsMS44NWMwLDEuNzAzLDAuMjY1LDMuMjU3LDAuNzk4LDQuNjQ5ICAgIGMwLjUzOCwxLjM5MywxLjY2MiwyLjI0NywzLjM2NiwyLjU1OGMxLjgzOCwwLjE5MiwzLjQ0OC0wLjIzOCw0LjgzNi0xLjI4NGMxLjM5My0xLjA0LDIuMDg3LTIuNTExLDIuMDg3LTQuNDExICAgIGMwLTEuMTQtMC4wMTYtMi4yODktMC4wNDItMy40NTljLTAuMDM2LTEuMTctMC4wODgtMi4yODktMC4xNDUtMy4zNjZjLTAuMDYyLTAuODg2LTAuMDk5LTEuNzAzLTAuMDk5LTIuNDY1ICAgIGMwLTAuNzU2LDAtMS41NDgsMC0yLjM3MWg3LjU4NmMxLjA3NywwLDIuMDItMC4wMzEsMi44NDktMC4wOTljMC44MTItMC4wNTcsMS41NzQtMC4yMzgsMi4yNjgtMC41MTggICAgYzAuNjk5LTAuMjksMS4zMjUtMC43NjIsMS45LTEuNDI0YzAuNTY5LTAuNjYzLDEuMTAzLTEuNTk2LDEuNjEtMi43OTFsMC4wOTktMC4wOTljMC41MDItMC44ODYsMC43NjEtMS43NCwwLjc2MS0yLjU1OCAgICBjMC0wLjU3LTAuMTI5LTEuMDYyLTAuMzgzLTEuNDc3Yy0wLjI1NC0wLjQwOC0wLjU2NC0wLjcyNS0wLjk0OC0wLjk0N2MtMC4zODMtMC4yMjMtMC43ODctMC4zOTQtMS4yMzItMC41MjMgICAgYy0wLjQ0NS0wLjEyNC0wLjg0OS0wLjIyMy0xLjIzMS0wLjI4NGMtMC41MDgtMC4wNjItMS4wNjItMC4xMDQtMS42NTctMC4xNGMtMC42MDEtMC4wMzEtMS4yODQtMC4wNDctMi4wNC0wLjA0NyAgICBjLTEuMDE2LDAtMi4wODIsMC4wMTYtMy4yMjEsMC4wNDdjLTEuMTQsMC4wMzYtMi4yNDgsMC4wODItMy4zMTQsMC4xNGMtMC41MTMsMC4wNjctMS4wMTUsMC4wOTMtMS41MjIsMC4wOTMgICAgYy0wLjQzNSwwLTAuODkxLDAtMS4zMjUsMGMwLjA1Ny0wLjUwMiwwLjA3Ny0wLjY4OCwwLjA1Mi0wLjU2NGMtMC4wNDIsMC4xMjUtMC4wNTItMC4wNjItMC4wNTItMC41Njl2LTUuNDk0ICAgIGMwLTAuMTI0LDAuMDEtMC4zMjYsMC4wNTItMC42MWMwLjAyNS0wLjI5MSwwLjA0MS0wLjUyMywwLjA0MS0wLjcxNWMwLjA2Mi0wLjgxOCwwLjA4My0xLjczNCwwLjA0Ny0yLjc0NCAgICBjLTAuMDMxLTEuMDE2LTAuMTYtMS45NjMtMC4zNzgtMi44NDlzLTAuNjIyLTEuNjI2LTEuMTg3LTIuMjI3Yy0wLjU2My0wLjYwMS0xLjM5My0wLjg5Ni0yLjQ2NC0wLjg5NiAgICBjLTAuNTEzLTAuMTk3LTEuMTg3LTAuMzE2LTIuMDQtMC4zODNjLTAuODUtMC4wNjItMS40NzEtMC4wNjItMS44NSwwYy0xLjEyOCwwLjE5MS0xLjg5NSwwLjY4NC0yLjI3MiwxLjQ3ICAgIGMtMC4zNzgsMC43OTgtMC42MDYsMS41OTUtMC42NjgsMi40MjRjLTAuMDU4LDAuNTAyLTAuMTE0LDEuMDU2LTAuMTQ2LDEuNjU3Yy0wLjAzMSwwLjYwMS0wLjA0MSwxLjI4NC0wLjA0MSwyLjA0ICAgIGMwLDEuMDE1LDAuMDIxLDIuMDgxLDAuMDQxLDMuMjIxYzAuMDMxLDEuMTM0LDAuMDg4LDIuMjQyLDAuMTQ2LDMuMzEzYzAsMC4zMjEsMC4wMTYsMC43OTMsMC4wNTIsMS40MyAgICBjMC4wMzEsMC42MzIsMC4wNTIsMS4xMDMsMC4wNTIsMS40MTloLTUuMzEzQzE0Mi4yNzEsMTkwLjk5NCwxNDIuMDE3LDE5MC45ODQsMTQxLjc2MywxOTAuOTQ3eiIgZmlsbD0iIzAwMDAwMCIvPgoJPC9nPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo=') no-repeat; 
+}
+
+.icon.datetime {
+	background: url('data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMS4xLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDI5LjEyMSAyOS4xMjEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI5LjEyMSAyOS4xMjE7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMzJweCIgaGVpZ2h0PSIzMnB4Ij4KPGc+Cgk8cGF0aCBkPSJNMjEuNzA2LDYuMTQ2YzEuMTE2LDAsMi4wMi0wLjg5OCwyLjAyLTIuMDE2VjIuMDJjMC0xLjExOS0wLjkwMy0yLjAyLTIuMDItMi4wMiAgIHMtMi4wMTksMC45LTIuMDE5LDIuMDJ2Mi4xMTFDMTkuNjg4LDUuMjQ4LDIwLjU5LDYuMTQ2LDIxLjcwNiw2LjE0NnoiIGZpbGw9IiMwMDAwMDAiLz4KCTxwYXRoIGQ9Ik0yOC44ODIsMy40OTRoLTQuMDY2djEuMDI3YzAsMS42OTUtMS4zNzcsMy4wNzYtMy4wNzUsMy4wNzZjLTEuNywwLTMuMDc0LTEuMzgxLTMuMDc0LTMuMDc2VjMuNDk0ICAgaC04LjIwNXYxLjAyN2MwLDEuNjk1LTEuMzc5LDMuMDc2LTMuMDc2LDMuMDc2cy0zLjA3NS0xLjM4LTMuMDc1LTMuMDc2VjMuNDk0TDAuMjA4LDMuNDQzdjI1LjY3OEgyLjI2aDI0LjYwNGwyLjA0OS0wLjAwNiAgIEwyOC44ODIsMy40OTR6IE0yNi44NjIsMjcuMDc2SDIuMjZWMTAuNjcyaDI0LjYwNHYxNi40MDRIMjYuODYyeiIgZmlsbD0iIzAwMDAwMCIvPgoJPHBhdGggZD0iTTcuMzU0LDYuMTQ2YzEuMTE2LDAsMi4wMjEtMC44OTgsMi4wMjEtMi4wMTZWMi4wMkM5LjM3NSwwLjksOC40NywwLDcuMzU0LDBTNS4zMzYsMC45LDUuMzM2LDIuMDIgICB2Mi4xMTFDNS4zMzYsNS4yNDgsNi4yMzcsNi4xNDYsNy4zNTQsNi4xNDZ6IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cmVjdCB4PSIxMC40NjgiIHk9IjEyLjg3MyIgd2lkdGg9IjMuMjMxIiBoZWlnaHQ9IjIuODUyIiBmaWxsPSIjMDAwMDAwIi8+Cgk8cmVjdCB4PSIxNS42OTIiIHk9IjEyLjg3MyIgd2lkdGg9IjMuMjM0IiBoZWlnaHQ9IjIuODUyIiBmaWxsPSIjMDAwMDAwIi8+Cgk8cmVjdCB4PSIyMC41MzciIHk9IjEyLjg3MyIgd2lkdGg9IjMuMjMxIiBoZWlnaHQ9IjIuODUyIiBmaWxsPSIjMDAwMDAwIi8+Cgk8cmVjdCB4PSIxMC40NjgiIHk9IjE3LjYwOSIgd2lkdGg9IjMuMjMxIiBoZWlnaHQ9IjIuODUiIGZpbGw9IiMwMDAwMDAiLz4KCTxyZWN0IHg9IjE1LjY5MiIgeT0iMTcuNjA5IiB3aWR0aD0iMy4yMzQiIGhlaWdodD0iMi44NSIgZmlsbD0iIzAwMDAwMCIvPgoJPHJlY3QgeD0iMjAuNTM3IiB5PSIxNy42MDkiIHdpZHRoPSIzLjIzMSIgaGVpZ2h0PSIyLjg1IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cmVjdCB4PSIxMC40NjgiIHk9IjIyLjQzOSIgd2lkdGg9IjMuMjMxIiBoZWlnaHQ9IjIuODUiIGZpbGw9IiMwMDAwMDAiLz4KCTxyZWN0IHg9IjUuMzM2IiB5PSIxNy42MDkiIHdpZHRoPSIzLjIyOSIgaGVpZ2h0PSIyLjg1IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cmVjdCB4PSI1LjMzNiIgeT0iMjIuNDM5IiB3aWR0aD0iMy4yMjkiIGhlaWdodD0iMi44NSIgZmlsbD0iIzAwMDAwMCIvPgoJPHJlY3QgeD0iMTUuNjkyIiB5PSIyMi40MzkiIHdpZHRoPSIzLjIzNCIgaGVpZ2h0PSIyLjg1IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cmVjdCB4PSIyMC41MzciIHk9IjIyLjQzOSIgd2lkdGg9IjMuMjMxIiBoZWlnaHQ9IjIuODUiIGZpbGw9IiMwMDAwMDAiLz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K') no-repeat; 
+}
+
+.icon.other {
+	background: url('data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjMycHgiIGhlaWdodD0iMzJweCIgdmlld0JveD0iMCAwIDMxLjM1NyAzMS4zNTciIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDMxLjM1NyAzMS4zNTc7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8cGF0aCBkPSJNMTUuMjU1LDBjNS40MjQsMCwxMC43NjQsMi40OTgsMTAuNzY0LDguNDczYzAsNS41MS02LjMxNCw3LjYyOS03LjY3LDkuNjJjLTEuMDE4LDEuNDgxLTAuNjc4LDMuNTYyLTMuNDc1LDMuNTYyICAgYy0xLjgyMiwwLTIuNzEyLTEuNDgyLTIuNzEyLTIuODM4YzAtNS4wNDYsNy40MTQtNi4xODgsNy40MTQtMTAuMzQzYzAtMi4yODctMS41MjItMy42NDMtNC4wNjYtMy42NDMgICBjLTUuNDI0LDAtMy4zMDYsNS41OTItNy40MTQsNS41OTJjLTEuNDgzLDAtMi43NTYtMC44OS0yLjc1Ni0yLjU4NEM1LjMzOSwzLjY4MywxMC4wODQsMCwxNS4yNTUsMHogTTE1LjA0NCwyNC40MDYgICBjMS45MDQsMCwzLjQ3NSwxLjU2NiwzLjQ3NSwzLjQ3NmMwLDEuOTEtMS41NjgsMy40NzYtMy40NzUsMy40NzZjLTEuOTA3LDAtMy40NzYtMS41NjQtMy40NzYtMy40NzYgICBDMTEuNTY4LDI1Ljk3MywxMy4xMzcsMjQuNDA2LDE1LjA0NCwyNC40MDZ6IiBmaWxsPSIjMDAwMDAwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==') no-repeat; 
+}
+
+.icon.search {
+	background: url('data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMS4xLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDMzOS45MjEgMzM5LjkyMSIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMzM5LjkyMSAzMzkuOTIxOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgd2lkdGg9IjI0cHgiIGhlaWdodD0iMjRweCI+CjxnPgoJPHBhdGggZD0iTTMzNS4xNjUsMjkyLjA3MWwtODEuMzg1LTg0LjA3N2MtNS44MzYtNi4wMzItMTMuMTMtOC40NDctMTYuMjktNS4zNjMgICBjLTMuMTcxLDMuMDYyLTEwLjQ3LDAuNjUzLTE2LjMwNi01LjM3OWwtMS4xNjQtMS4yMDdjMzYuNDI1LTQ3LjkwNywzMi44OS0xMTYuNDk5LTEwLjg1MS0xNjAuMjQgICBjLTQ3LjczOS00Ny43MzktMTI1LjE0Mi00Ny43MzktMTcyLjg3NSwwYy00Ny43MzksNDcuNzM5LTQ3LjczOSwxMjUuMTMxLDAsMTcyLjg3YzQ0LjQ4Niw0NC40OTIsMTE0LjY5OSw0Ny40NzIsMTYyLjcwNCw5LjA0NSAgIGwwLjUxMSwwLjUzM2M1LjgyNSw2LjAzMiw3Ljk5NSwxMy40MDIsNC44MTQsMTYuNDY5Yy0zLjE2NiwzLjA2OC0xLjAxMiwxMC40NDMsNC44MywxNi40NjRsODEuMzQxLDg0LjExICAgYzUuODM2LDYuMDE2LDE1LjQ1Miw2LjE5NSwyMS40OSwwLjM1NGwyMi44MjgtMjIuMDg4QzM0MC44MjcsMzA3LjczNSwzNDAuOTksMjk4LjEyNSwzMzUuMTY1LDI5Mi4wNzF6IE0xODIuMzA2LDE4MS44MSAgIGMtMzIuODUyLDMyLjg1Ny04Ni4zMTIsMzIuODU3LTExOS4xNTksMC4wMTFjLTMyLjg1Mi0zMi44NTItMzIuODQ3LTg2LjMxOCwwLTExOS4xNjRjMzIuODQ3LTMyLjg1Miw4Ni4zMDctMzIuODQ3LDExOS4xNDgsMC4wMDUgICBDMjE1LjE1Miw5NS41MDksMjE1LjE1MiwxNDguOTY0LDE4Mi4zMDYsMTgxLjgxeiIgZmlsbD0iI0ZGRkZGRiIvPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo=') no-repeat; 
+	width: 24px;
+	height: 24px;
+	margin-top: 9px;
+}
+
+.table-header-btn {
+	display:flex;
+	font-size: 15px;
+}
+
+.table-header-name {
+	font-size: 30px;
+	font-weight: bold;
+	padding-left: 3px;
+}
+
+.table-header-numbers-container {
+	position:absolute;
+	right: 0px;
+	margin-top: -10px;
+	text-align: left;
+	width: 250px
+}
+
+.table-header-numbers {
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.good {
+    color: #33a02c;
+}
+
+.bad {
+    color: #e31a1c;
+}
+
+.mediocer {
+    color: #fdbf6f;
+}
+
+.table .thead-dark-numeric th {
+    background-color: #66c2a5;
+    border-color: #66c2a5;
+    color: white;
+}
+
+.table .thead-dark-datetime th {
+    background-color: #fc8d62;
+    border-color: #fc8d62;
+	color: white;
+}
+
+.table .thead-dark-character th {
+    background-color: #8da0cb;
+    border-color: #8da0cb;
+	color: white;
+}
+
+.table .thead-dark-other th {
+    background-color: #7fc97f;
+    border-color: #7fc97f;
+	color: white;
+}
+
+.database-name-container {
+	color: white;
+	padding: 16px;
+}
+
+.results h4 {
+	text-align: left;
+}
+	</style>
+</head>
+
+<body>
+
+	
+	<div class="container">
+		<nav class="navbar navbar-dark bg-dark">
+			<div class="title"> 
+				Database Explorer 
+			</div>
+		</nav>
+		<div class="col-lg-12 content">
+			<div class="text-center database-name-container">
+				<h3>
+					Explored database:
+					<span id="output-database-name"></span>
+				</h3>
+			</div>
+			<div class="search-panel">
+				<div class="icon search"></div>
+				<span>Search by</span>
+				<select id="input-search-type" class="form-control">
+					<option value="table">table name</option>
+					<option value="column">column name</option>
+					<option value="value">value</option>
+				</select>
+				<input id="input-search-value" type="text" class="form-control" placeholder="Search value" />
+				<label id="input-container-matching-columns" class="checkbox" style="display: none;">
+					<input id="input-matching-columns" type="checkbox"> Show only matching columns
+				</label>
+			</div>
+			<div class="results">
+				<h4>Results</h4>
+				<div id="output-results">
+				</div>
+			</div>
+		</div>
+		<div class="bg-dark footer">
+			<div class="row">
+				<div class="col-lg-6 text-left">
+					</br>
+					<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> & <a href="https://www.flaticon.com/authors/ocha" title="OCHA">OCHA</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+				</div>
+				<div class="col-lg-6">
+					<div> 
+						Generated by <a href="https://github.com/ppollakr/dbexplorer">DatabaseExplorer</a>
+					</div>
+					<div> 
+						Created by: Paweł Pollak, Karol Prusinowski & Karol Szczawiński
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	/**
+ * The class of all data needed to generate report. Data is generated as json in Python. Contains method for clearing empty tables.
+ */
+class Data {
+	constructor() {
+		return this.clearEmptyTables({"scheme": "SchemeName", "database": "dvdrental", "tables": [{"name": "staff", "records": 2, "columns": [{"data": [{"key": "Name", "value": "staff_id"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "2.000"}, {"key": "Mean", "value": "1.500"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "address_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "3.000"}, {"key": "Maximum", "value": "4.000"}, {"key": "Mean", "value": "3.500"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "store_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "2.000"}, {"key": "Mean", "value": "1.500"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "first_name"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["Mike", "Jon"]}, {"key": "Counts of the most common values", "value": [1, 1]}], "type": "character"}, {"data": [{"key": "Name", "value": "last_name"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["Stephens", "Hillyer"]}, {"key": "Counts of the most common values", "value": [1, 1]}], "type": "character"}, {"data": [{"key": "Name", "value": "email"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["Jon.Stephens@sakilastaff.com", "Mike.Hillyer@sakilastaff.com"]}, {"key": "Counts of the most common values", "value": [1, 1]}], "type": "character"}, {"data": [{"key": "Name", "value": "active"}, {"key": "SQL Type", "value": "boolean"}, {"key": "The most common", "value": [true]}, {"key": "Counts of the most common values", "value": [2]}], "type": "character"}, {"data": [{"key": "Name", "value": "username"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["Mike", "Jon"]}, {"key": "Counts of the most common values", "value": [1, 1]}], "type": "character"}, {"data": [{"key": "Name", "value": "password"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["8cb2237d0679ca88db6464eac60da96345513964"]}, {"key": "Counts of the most common values", "value": [2]}], "type": "character"}, {"data": [{"key": "Name", "value": "last_update"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2006-05-16 16:13:11.793280"}, {"key": "Maximum", "value": "2006-05-16 16:13:11.793280"}], "type": "datetime"}, {"data": [{"key": "Name", "value": "picture"}, {"key": "SQL Type", "value": "bytea"}]}]}, {"name": "category", "records": 16, "columns": [{"data": [{"key": "Name", "value": "category_id"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "16.000"}, {"key": "Mean", "value": "8.500"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "name"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["Drama", "Horror", "Sci-Fi", "Classics", "Comedy"]}, {"key": "Counts of the most common values", "value": [1, 1, 1, 1, 1]}], "type": "character"}, {"data": [{"key": "Name", "value": "last_update"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2006-02-15 09:46:27"}, {"key": "Maximum", "value": "2006-02-15 09:46:27"}], "type": "datetime"}]}, {"name": "film_category", "records": 1000, "columns": [{"data": [{"key": "Name", "value": "film_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "1000.000"}, {"key": "Mean", "value": "500.500"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "category_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "16.000"}, {"key": "Mean", "value": "8.478"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "last_update"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2006-02-15 10:07:09"}, {"key": "Maximum", "value": "2006-02-15 10:07:09"}], "type": "datetime"}]}, {"name": "country", "records": 109, "columns": [{"data": [{"key": "Name", "value": "country_id"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "109.000"}, {"key": "Mean", "value": "55.000"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "country"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["Turkey", "Germany", "Chad", "Madagascar", "Cambodia"]}, {"key": "Counts of the most common values", "value": [1, 1, 1, 1, 1]}], "type": "character"}, {"data": [{"key": "Name", "value": "last_update"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2006-02-15 09:44:00"}, {"key": "Maximum", "value": "2006-02-15 09:44:00"}], "type": "datetime"}]}, {"name": "actor", "records": 200, "columns": [{"data": [{"key": "Name", "value": "actor_id"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "200.000"}, {"key": "Mean", "value": "100.500"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "first_name"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["Penelope", "Kenneth", "Julia", "Russell", "Ed"]}, {"key": "Counts of the most common values", "value": [4, 4, 4, 3, 3]}], "type": "character"}, {"data": [{"key": "Name", "value": "last_name"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["Kilmer", "Nolte", "Temple", "Willis", "Garland"]}, {"key": "Counts of the most common values", "value": [5, 4, 4, 3, 3]}], "type": "character"}, {"data": [{"key": "Name", "value": "last_update"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2013-05-26 14:47:57.620000"}, {"key": "Maximum", "value": "2013-05-26 14:47:57.620000"}], "type": "datetime"}]}, {"name": "language", "records": 6, "columns": [{"data": [{"key": "Name", "value": "language_id"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "6.000"}, {"key": "Mean", "value": "3.500"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "name"}, {"key": "SQL Type", "value": "character"}, {"key": "The most common", "value": ["French              ", "German              ", "English             ", "Italian             ", "Japanese            "]}, {"key": "Counts of the most common values", "value": [1, 1, 1, 1, 1]}], "type": "character"}, {"data": [{"key": "Name", "value": "last_update"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2006-02-15 10:02:19"}, {"key": "Maximum", "value": "2006-02-15 10:02:19"}], "type": "datetime"}]}, {"name": "inventory", "records": 4581, "columns": [{"data": [{"key": "Name", "value": "inventory_id"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "4581.000"}, {"key": "Mean", "value": "2291.000"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "film_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "1000.000"}, {"key": "Mean", "value": "500.936"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "store_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "2.000"}, {"key": "Mean", "value": "1.504"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "last_update"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2006-02-15 10:09:17"}, {"key": "Maximum", "value": "2006-02-15 10:09:17"}], "type": "datetime"}]}, {"name": "payment", "records": 14596, "columns": [{"data": [{"key": "Name", "value": "payment_id"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "17503.000"}, {"key": "Maximum", "value": "32098.000"}, {"key": "Mean", "value": "24800.500"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "customer_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "599.000"}, {"key": "Mean", "value": "297.372"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "staff_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "2.000"}, {"key": "Mean", "value": "1.500"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "rental_id"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "1158.000"}, {"key": "Maximum", "value": "16049.000"}, {"key": "Mean", "value": "8729.718"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "amount"}, {"key": "SQL Type", "value": "numeric"}, {"key": "Minimum", "value": "0.000"}, {"key": "Maximum", "value": "11.990"}, {"key": "Mean", "value": "4.201"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "payment_date"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2007-02-14 21:21:59.996577"}, {"key": "Maximum", "value": "2007-05-14 13:44:29.996577"}], "type": "datetime"}]}, {"name": "rental", "records": 16044, "columns": [{"data": [{"key": "Name", "value": "rental_id"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "16049.000"}, {"key": "Mean", "value": "8025.371"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "inventory_id"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "4581.000"}, {"key": "Mean", "value": "2291.843"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "customer_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "599.000"}, {"key": "Mean", "value": "297.143"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "staff_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "2.000"}, {"key": "Mean", "value": "1.499"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "rental_date"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2005-05-24 22:53:30"}, {"key": "Maximum", "value": "2006-02-14 15:16:03"}], "type": "datetime"}, {"data": [{"key": "Name", "value": "return_date"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2005-05-25 23:55:21"}, {"key": "Maximum", "value": "2005-09-02 02:35:22"}], "type": "datetime"}, {"data": [{"key": "Name", "value": "last_update"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2006-02-15 21:30:53"}, {"key": "Maximum", "value": "2006-02-23 09:12:08"}], "type": "datetime"}]}, {"name": "city", "records": 600, "columns": [{"data": [{"key": "Name", "value": "city_id"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "600.000"}, {"key": "Mean", "value": "300.500"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "country_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "109.000"}, {"key": "Mean", "value": "56.400"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "city"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["London", "Rae Bareli", "Vitria de Santo Anto", "Molodetno", "Yerevan"]}, {"key": "Counts of the most common values", "value": [2, 1, 1, 1, 1]}], "type": "character"}, {"data": [{"key": "Name", "value": "last_update"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2006-02-15 09:45:25"}, {"key": "Maximum", "value": "2006-02-15 09:45:25"}], "type": "datetime"}]}, {"name": "store", "records": 2, "columns": [{"data": [{"key": "Name", "value": "store_id"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "2.000"}, {"key": "Mean", "value": "1.500"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "manager_staff_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "2.000"}, {"key": "Mean", "value": "1.500"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "address_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "2.000"}, {"key": "Mean", "value": "1.500"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "last_update"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2006-02-15 09:57:12"}, {"key": "Maximum", "value": "2006-02-15 09:57:12"}], "type": "datetime"}]}, {"name": "address", "records": 603, "columns": [{"data": [{"key": "Name", "value": "address_id"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "605.000"}, {"key": "Mean", "value": "302.720"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "city_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "600.000"}, {"key": "Mean", "value": "300.526"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "address"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["482 Kowloon and New Kowloon Manor", "41 El Alto Parkway", "1152 Citrus Heights Manor", "568 Dhule (Dhulia) Loop", "1354 Siegen Street"]}, {"key": "Counts of the most common values", "value": [1, 1, 1, 1, 1]}], "type": "character"}, {"data": [{"key": "Name", "value": "address2"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["", null]}, {"key": "Counts of the most common values", "value": [599, 4]}], "type": "character"}, {"data": [{"key": "Name", "value": "district"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["Buenos Aires", "Shandong", "West Bengali", "California", "Uttar Pradesh"]}, {"key": "Counts of the most common values", "value": [10, 9, 9, 9, 8]}], "type": "character"}, {"data": [{"key": "Name", "value": "postal_code"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["", "52137", "9668", "22474", "17032"]}, {"key": "Counts of the most common values", "value": [4, 2, 2, 2, 1]}], "type": "character"}, {"data": [{"key": "Name", "value": "phone"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["", "754358349853", "775235029633", "134673576619", "965273813662"]}, {"key": "Counts of the most common values", "value": [2, 1, 1, 1, 1]}], "type": "character"}, {"data": [{"key": "Name", "value": "last_update"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2006-02-15 09:45:30"}, {"key": "Maximum", "value": "2006-02-15 09:45:30"}], "type": "datetime"}]}, {"name": "film_actor", "records": 5462, "columns": [{"data": [{"key": "Name", "value": "actor_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "200.000"}, {"key": "Mean", "value": "100.952"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "film_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "1000.000"}, {"key": "Mean", "value": "501.142"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "last_update"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2006-02-15 10:05:03"}, {"key": "Maximum", "value": "2006-02-15 10:05:03"}], "type": "datetime"}]}, {"name": "film", "records": 1000, "columns": [{"data": [{"key": "Name", "value": "film_id"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "1000.000"}, {"key": "Mean", "value": "500.500"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "release_year"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "2006.000"}, {"key": "Maximum", "value": "2006.000"}, {"key": "Mean", "value": "2006.000"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "language_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "1.000"}, {"key": "Mean", "value": "1.000"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "rental_duration"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "3.000"}, {"key": "Maximum", "value": "7.000"}, {"key": "Mean", "value": "4.985"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "rental_rate"}, {"key": "SQL Type", "value": "numeric"}, {"key": "Minimum", "value": "0.990"}, {"key": "Maximum", "value": "4.990"}, {"key": "Mean", "value": "2.980"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "length"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "46.000"}, {"key": "Maximum", "value": "185.000"}, {"key": "Mean", "value": "115.272"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "replacement_cost"}, {"key": "SQL Type", "value": "numeric"}, {"key": "Minimum", "value": "9.990"}, {"key": "Maximum", "value": "29.990"}, {"key": "Mean", "value": "19.984"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "title"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["Arachnophobia Rollercoaster", "Cruelty Unforgiven", "Intolerable Intentions", "Center Dinosaur", "Frontier Cabin"]}, {"key": "Counts of the most common values", "value": [1, 1, 1, 1, 1]}], "type": "character"}, {"data": [{"key": "Name", "value": "description"}, {"key": "SQL Type", "value": "text"}, {"key": "The most common", "value": ["A Emotional Drama of a Boy And a Technical Writer who must Redeem a Sumo Wrestler in California", "A Emotional Documentary of a Dentist And a Woman who must Battle a Mad Scientist in Ancient China", "A Fanciful Saga of a Hunter And a Pastry Chef who must Vanquish a Boy in Australia", "A Intrepid Tale of a Boat And a Monkey who must Kill a Cat in California", "A Touching Saga of a Crocodile And a Crocodile who must Discover a Technical Writer in Nigeria"]}, {"key": "Counts of the most common values", "value": [1, 1, 1, 1, 1]}], "type": "character"}, {"data": [{"key": "Name", "value": "rating"}, {"key": "SQL Type", "value": "USER-DEFINED"}]}, {"data": [{"key": "Name", "value": "special_features"}, {"key": "SQL Type", "value": "ARRAY"}]}, {"data": [{"key": "Name", "value": "fulltext"}, {"key": "SQL Type", "value": "tsvector"}]}, {"data": [{"key": "Name", "value": "last_update"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2013-05-26 14:50:58.951000"}, {"key": "Maximum", "value": "2013-05-26 14:50:58.951000"}], "type": "datetime"}]}, {"name": "customer", "records": 599, "columns": [{"data": [{"key": "Name", "value": "customer_id"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "599.000"}, {"key": "Mean", "value": "300.000"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "store_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "1.000"}, {"key": "Maximum", "value": "2.000"}, {"key": "Mean", "value": "1.456"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "address_id"}, {"key": "SQL Type", "value": "smallint"}, {"key": "Minimum", "value": "5.000"}, {"key": "Maximum", "value": "605.000"}, {"key": "Mean", "value": "304.725"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "active"}, {"key": "SQL Type", "value": "integer"}, {"key": "Minimum", "value": "0.000"}, {"key": "Maximum", "value": "1.000"}, {"key": "Mean", "value": "0.975"}], "type": "numeric"}, {"data": [{"key": "Name", "value": "first_name"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["Jamie", "Jessie", "Leslie", "Kelly", "Willie"]}, {"key": "Counts of the most common values", "value": [2, 2, 2, 2, 2]}], "type": "character"}, {"data": [{"key": "Name", "value": "last_name"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["Roush", "Miller", "Tubbs", "Duggan", "Robert"]}, {"key": "Counts of the most common values", "value": [1, 1, 1, 1, 1]}], "type": "character"}, {"data": [{"key": "Name", "value": "email"}, {"key": "SQL Type", "value": "character varying"}, {"key": "The most common", "value": ["heidi.larson@sakilacustomer.org", "jon.wiles@sakilacustomer.org", "derrick.bourque@sakilacustomer.org", "maxine.silva@sakilacustomer.org", "neil.renner@sakilacustomer.org"]}, {"key": "Counts of the most common values", "value": [1, 1, 1, 1, 1]}], "type": "character"}, {"data": [{"key": "Name", "value": "activebool"}, {"key": "SQL Type", "value": "boolean"}, {"key": "The most common", "value": [true]}, {"key": "Counts of the most common values", "value": [599]}], "type": "character"}, {"data": [{"key": "Name", "value": "create_date"}, {"key": "SQL Type", "value": "date"}, {"key": "Minimum", "value": "2006-02-14"}, {"key": "Maximum", "value": "2006-02-14"}], "type": "datetime"}, {"data": [{"key": "Name", "value": "last_update"}, {"key": "SQL Type", "value": "timestamp without time zone"}, {"key": "Minimum", "value": "2013-05-26 14:49:45.738000"}, {"key": "Maximum", "value": "2013-05-26 14:49:45.738000"}], "type": "datetime"}]}]});
+	}
+	
+	/**
+	 * Delete unnecessary data from columns on empty tables. It leaves the name of the column and the SQL type
+	 * @param {Data} data - raport data in json.
+	 * @return {Data} Cleared data.
+	 */
+	clearEmptyTables(data) {
+		data.tables.forEach(table => {
+			if(table.records == 0) {
+				table.columns.forEach(column => {
+					column.data = column.data.filter(data => data.key === 'Name' || data.key == 'SQL Type')
+				});
+			}
+		});
+		return data;
+	}
+}/**
+ * Intermediate class between html and js. Contains all html controls for input and output.
+ * @property {object}  input - html controls used for data input
+ * @property {object}  input.searchValue - html input control for search value
+ * @property {object}  input.searchType - html select control for search type (table, column or value)
+ * @property {object}  input.matchingColumns - html checkbox control indicating whether to display mismatched columns
+ * @property {object}  input.matchingColumnsContainer - container of input.matchingColumns
+ * @property {object}  output - html controls used for data output
+ * @property {object}  output.databaseName - html div for displaying db name
+ * @property {object}  output.databaseName - html div for displaying report results
+ */
+class Controls {
+	/**
+	 * Gets control from html using jquery.
+	 */
+	constructor() {
+		this.input = {
+			
+			searchValue: $('#input-search-value'),
+			searchType: $('#input-search-type'),
+			matchingColumns: $('#input-matching-columns'),
+			matchingColumnsContainer: $('#input-container-matching-columns')
+		}
+		
+		this.output = {
+			databaseName: $('#output-database-name'),
+			results: $('#output-results')
+		}
+	}
+}/**
+ * Class for converting table from json to html
+ * @property {object} content - table as html
+ */
+class Table {
+	/**
+	 * Creates table
+	 * @param {object} table - table as json data
+	 * @param {Controls} controls
+	 */
+	constructor(table, controls) {
+		this.controls = controls;
+		
+		var header = this.createHeader(table);
+		var body = this.createBody(table.columns);
+
+		var collapseWrapper = this.createCollapseWrapper(table.name);
+		collapseWrapper.append(body);
+
+		this.content = this.createCard(header, collapseWrapper);
+	}
+	
+	/**
+	 * Combines together header and body of table
+	 * @param {object} header - table header, collapsable div
+	 * @param {object} body - table body, html tables with report
+	 */
+	createCard(header, body) {
+		var card = $('<div class="card"></div>');
+		card.append(header, body);
+		return card;
+	}
+	
+	/**
+	 * Creates table header - collapsable div
+	 * @param {object} table - table as json data
+	 * @returns {object} table header - collapsable div
+	 */
+	createHeader(table) {
+		return `<div class="card-header" id="headingOne"> 
+					<h5 class="mb-0"> 
+						<div class ="btn btn-link collapsed table-header-btn" data-toggle="collapse" data-target="#collapse${table.name}" aria-expanded="true" aria-controls="collapse${table.name}">
+							<div>
+								Table name:
+								<span class="table-header-name">${table.name}</span>
+							</div>
+							<div class="table-header-numbers-container">
+								<div>
+									Number of columns:
+									<span class="table-header-numbers">${table.columns.length}</span>
+								</div>
+								<div>
+									Number of records:
+									<span class="table-header-numbers">${table.records}</span>
+								</div>
+							</div>
+						</div>
+					</h5> 
+				</div>`;
+	}
+	
+	/**
+	 * Creates table body - html tables (column sorted by type) with report data
+	 * @param {Array<object>} columns - table columns as json data
+	 * @returns {object} table body - html table with report data
+	 */
+	createBody(columns) {
+		var cardBody = $(`<div class="card-body"></div>`);
+		
+		var numericColumns = columns.filter((column) => column.type === 'numeric');
+		var characterColumns = columns.filter((column) => column.type === 'character');
+		var dateColumns = columns.filter((column) => column.type === 'datetime');
+		var otherColumns = columns.filter((column) => ['numeric', 'character', 'datetime'].indexOf(column.type) < 0 );
+
+		cardBody.append(this.createColumns(numericColumns, 'Numeric columns'),
+			this.createColumns(characterColumns, 'Character columns'),
+			this.createColumns(dateColumns, 'Datetime columns'),
+			this.createColumns(otherColumns, 'Other columns'))
+
+		return cardBody;
+	}
+	
+	/**
+	 * Creates report for columns of specific type (numeric, character, date or other)
+	 * @param {Array<object>} columns - table columns of specific type as json data
+	 * @param {string} header - header for table with typed columns report
+	 * @returns {object} table body - html div with report
+	 */
+	createColumns(columns, header) {
+		if(columns.length == 0) {
+			return;
+		}
+		var notEmpty = false;
+		
+		var thead = this.createColumnTableHeader(columns[0], header);
+		var tbody = $('<tbody></tbody>');
+				
+		columns.forEach(column => {
+			if(this.showColumn(column)) {
+				tbody.append(this.createColumnRow(column));
+				notEmpty = true;
+			}
+		})
+		
+		if(!notEmpty) {
+			return;
+		}
+		
+		var table = $('<table class="table table-striped"></table>').append(thead, tbody);
+		var header = $(`<h5 class="normal-text"><div class="icon ${header.toLowerCase()}"></div>${header}</h5>`);
+		return $('<div class="column-table"></div>').append(header, table);
+	}
+	
+	/**
+	 * Creates data header for columns table report
+	 * @param {object} column - any column (as json data) of specific type
+	 * @returns {object} thead with data headers
+	 */
+	createColumnTableHeader(column, header) {
+		var row = $('<tr></tr>');
+		column.data.forEach(function (data) {
+			row.append(`<th>${data.key}</th>`);
+		});
+		return $(`<thead class="thead-dark-${header.toLowerCase()}"></thead>`).append(row);
+	}
+	
+	/**
+	 * Checks whether the column should be shown
+	 * @param {object} column - column as json data
+	 * @returns {boolean} if the column should be shown
+	 */
+	showColumn(column) {
+		var showOnlyMatching = this.controls.input.searchType.val() === "column" && this.controls.input.matchingColumns.is(':checked');
+		return !showOnlyMatching || this.getColumnName(column).toLowerCase().indexOf(controls.input.searchValue.val()) >= 0;
+	}
+	
+	/**
+	 * Creates report table row for column
+	 * @param {object} column - column as json data
+	 * @returns {object} html row with column data
+	 */
+	createColumnRow(column) {
+		var row = $('<tr></tr>');
+		column.data.forEach(data => {
+			var cssClass = this.getClass(data);
+			var value = data.value instanceof Array ? data.value.map(this.nullToString).join('</br>') : this.nullToString(data.value);
+			row.append(`<td class=${cssClass}>${value}</td>`);
+		});
+		return row;
+	}
+	
+	/**
+	 * Collapsable wrapper for table report body
+	 * @param {string} tableName - table name
+	 * @returns {object} html div which is a wrapper for report body
+	 */
+	createCollapseWrapper(tableName) {
+		return $(`<div id="collapse${tableName}" class="collapse" aria-labelledby="heading${tableName}" data-parent="#output-results"></div>`);
+	}
+	
+	/**
+	 * Helper method. Change null to string 'null'
+	 * @param {object} value
+	 * @returns {object} string 'null' if value is null, value otherwise
+	 */
+	nullToString(value) {
+		return value == null ? "null" : value;
+	}
+	
+	/**
+	 * Gets (creates if non existing) column name
+	 * @param {object} column - column as json data
+	 * @return {string} - column name
+	 */
+	getColumnName(column) {
+		if (!column.name) {
+			column.name = column.data.find(data => data.key == 'Name').value;
+		}
+		return column.name;
+	}
+	
+	
+	/**
+	 * Gets styles for data
+	 * @param {object} data - key value data
+	 * @return {string} - css class name
+	 */
+	getClass(data) {
+		if (data.key === "Empty") {
+			var value = parseInt(data.value);
+			if (value < 10) {
+				return 'good';
+			} else if (value >= 50) {
+				return 'bad';
+			} else {
+				return 'mediocer';
+			}
+		}
+		return '';
+	}
+}
+/**
+ * Class managing results.
+ */
+class ResultsModule {
+	/**
+	 * Create result module
+	 * @param {Controls} controls
+	 * @param {Data} data
+	 */
+	constructor(controls, data) {
+		this.controls = controls;
+		this.data = data;
+	}
+	
+	/**
+	 * Create and displaye all tables
+	 * @param {Array<object>} tables - tables as json objects
+	 */
+	showTables(tables) {
+		this.controls.output.results.empty();
+		if (tables.length > 0) {
+			tables.forEach(table => this.addTable(table));
+		} else {
+			this.controls.output.results.append("No matching tables");
+		}
+	}
+	
+	/**
+	 * Convert table from json data to html
+	 * @param {object} table - table as json object
+	 */
+	addTable(table) {
+		var table = new Table(table, this.controls);
+		this.controls.output.results.append(table.content);
+	}
+}/**
+ * Class managing table search.
+ */
+class SearchModule {
+	/**
+	 * Create search module
+	 * @param {Controls} controls
+	 * @param {Data} data
+	 * @param {ResultsModule} results
+	 */
+	constructor(controls, data, results) {
+		this.controls = controls;
+		this.data = data;
+		this.results = results;
+		this.controls.input.searchValue.on('input', () => this.search());
+		this.controls.input.searchType.on('input', () => this.search());
+		this.controls.input.matchingColumns.on('change', () => this.search());
+	}
+		
+	/**
+	 * Gets search type and value and initialize searching
+	 */
+	search() {
+		var type = this.controls.input.searchType.val();
+		var value = this.controls.input.searchValue.val();
+		if (type != 'column') {
+			this.controls.input.matchingColumnsContainer.hide();
+		} else {
+			this.controls.input.matchingColumnsContainer.show();
+		}
+		this.filter(type, value);
+	}
+	
+	/**
+	 * Searches the tables according to the specified type and value. Initialize displaying filtered tables
+	 * @param {string} type - search type (table, column or value)
+	 * @param {string} value - search value
+	 */
+	filter(type, value) {
+		var filteredTables = data.tables;
+		if (value.length != 0) {
+			value = value.toLowerCase();
+			switch (type) {
+				case 'table':
+					filteredTables = this.filterByTables(value);
+					break;
+				case 'column':
+					filteredTables = this.filterByColumn(value);
+					break;
+				case 'value':
+					filteredTables = this.filterByValue(value);
+					break;
+			}
+		}
+		this.results.showTables(filteredTables);
+	}
+
+	/**
+	 * Filters tables by specified table name
+	 * @param {string} value - search value
+	 * @return {Array<object>} - filtered by value tables as json data
+	 */
+	filterByTables(value) {
+		return this.data.tables.filter(table => {
+			return table.name.toLowerCase().indexOf(value) >= 0;
+		});
+	}
+
+	/**
+	 * Filters tables by specified column name
+	 * @param {string} value - search value
+	 * @return {Array<object>} - filtered by value tables as json data
+	 */
+	filterByColumn(value) {
+		return this.data.tables.filter(table => {
+			return table.columns.some(column => {
+				return this.getColumnName(column).toLowerCase().indexOf(value) >= 0;
+			});
+		});
+	}
+
+	/**
+	 * Filters tables by specified value
+	 * @param {string} value - search value
+	 * @return {Array<object>} - filtered by value tables as json data
+	 */
+	filterByValue(value) {
+		return this.data.tables.filter(table => {
+			return table.columns.some(column => {
+				return column.data.some(data => {
+					return data.value.toString().toLowerCase().indexOf(value) >= 0;
+				});
+			});
+		});
+	}
+
+	/**
+	 * Gets (creates if non existing) column name
+	 * @param {object} column - column as json data
+	 * @return {string} - column name
+	 */
+	getColumnName(column) {
+		if (!column.name) {
+			column.name = column.data.find(data => data.key == 'Name').value;
+		}
+		return column.name;
+		 
+	}
+	
+}/**
+ * Initializing application. Run on load.
+ */
+$(function() {
+	data = new Data();
+	controls = new Controls();
+	controls.output.databaseName.append(`${data.database}`);
+	
+	resultsModule = new ResultsModule(controls, data);
+	searchModule = new SearchModule(controls, data, resultsModule);
+	resultsModule.showTables(data.tables);
+})
+</script>
+
+</html>

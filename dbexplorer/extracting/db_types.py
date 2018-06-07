@@ -187,8 +187,8 @@ class DatetimeColumn(Column):
         ret = super(DatetimeColumn, self).to_dict()
         ret["type"] = "datetime"
         ret["data"] += to_key_value({
-            "Maximum": self.max,
             "Minimum": self.min,
+            "Maximum": self.max,
         })
         return ret
 

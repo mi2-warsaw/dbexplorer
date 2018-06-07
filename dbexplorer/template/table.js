@@ -39,9 +39,22 @@ class Table {
 	createHeader(table) {
 		return `<div class="card-header" id="headingOne"> 
 					<h5 class="mb-0"> 
-						<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse${table.name}" aria-expanded="true" aria-controls="collapse${table.name}"> 
-							${table.name} (columns: ${table.columns.length}, records: ${table.records})
-						</button> 
+						<div class ="btn btn-link collapsed table-header-btn" data-toggle="collapse" data-target="#collapse${table.name}" aria-expanded="true" aria-controls="collapse${table.name}">
+							<div>
+								Table name:
+								<span class="table-header-name">${table.name}</span>
+							</div>
+							<div class="table-header-numbers-container">
+								<div>
+									Number of columns:
+									<span class="table-header-numbers">${table.columns.length}</span>
+								</div>
+								<div>
+									Number of records:
+									<span class="table-header-numbers">${table.records}</span>
+								</div>
+							</div>
+						</div>
 					</h5> 
 				</div>`;
 	}
@@ -79,7 +92,7 @@ class Table {
 		}
 		var notEmpty = false;
 		
-		var thead = this.createColumnTableHeader(columns[0]);
+		var thead = this.createColumnTableHeader(columns[0], header);
 		var tbody = $('<tbody></tbody>');
 				
 		columns.forEach(column => {
@@ -93,8 +106,8 @@ class Table {
 			return;
 		}
 		
-		var table = $('<table class="table table-stripped"></table>').append(thead, tbody);
-		var header = $(`<h5 class="normal-text">${header}</h5>`);
+		var table = $('<table class="table table-striped"></table>').append(thead, tbody);
+		var header = $(`<h5 class="normal-text"><div class="icon ${header.toLowerCase()}"></div>${header}</h5>`);
 		return $('<div class="column-table"></div>').append(header, table);
 	}
 	
@@ -103,12 +116,12 @@ class Table {
 	 * @param {object} column - any column (as json data) of specific type
 	 * @returns {object} thead with data headers
 	 */
-	createColumnTableHeader(column) {
+	createColumnTableHeader(column, header) {
 		var row = $('<tr></tr>');
 		column.data.forEach(function (data) {
 			row.append(`<th>${data.key}</th>`);
 		});
-		return $('<thead></thead>').append(row);
+		return $(`<thead class="thead-dark-${header.toLowerCase()}"></thead>`).append(row);
 	}
 	
 	/**
@@ -129,8 +142,9 @@ class Table {
 	createColumnRow(column) {
 		var row = $('<tr></tr>');
 		column.data.forEach(data => {
+			var cssClass = this.getClass(data);
 			var value = data.value instanceof Array ? data.value.map(this.nullToString).join('</br>') : this.nullToString(data.value);
-			row.append(`<td>${value}</td>`);
+			row.append(`<td class=${cssClass}>${value}</td>`);
 		});
 		return row;
 	}
@@ -163,5 +177,25 @@ class Table {
 			column.name = column.data.find(data => data.key == 'Name').value;
 		}
 		return column.name;
+	}
+	
+	
+	/**
+	 * Gets styles for data
+	 * @param {object} data - key value data
+	 * @return {string} - css class name
+	 */
+	getClass(data) {
+		if (data.key === "Empty") {
+			var value = parseInt(data.value);
+			if (value < 10) {
+				return 'good';
+			} else if (value >= 50) {
+				return 'bad';
+			} else {
+				return 'mediocer';
+			}
+		}
+		return '';
 	}
 }
