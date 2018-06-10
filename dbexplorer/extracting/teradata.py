@@ -195,7 +195,7 @@ class TeradataTableExtractor(TableExtractor):
         return ret
 
     def _are_texts_longer_than_max(self, column_name: str) -> bool:
-        max_len = get_text_len(column_name, self.table_name, self.db_connection)
+        max_len = get_text_len(column_name, self.db_name + "." + self.table_name, self.db_connection)
         return max_len is not None and max_len > self.max_text_len
 
     def _get_basic_text_columns(self, columns: Sequence[Mapping[str, str]]) -> Sequence[TextColumn]:
