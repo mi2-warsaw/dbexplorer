@@ -91,11 +91,16 @@ class PostgresTableExtractor(TableExtractor):
         ret = []
         cursor = self.db_connection.cursor()
         for c in columns:
-            cursor.execute(f"""SELECT "{c["name"]}", count(*) from {self.table_name}
-                        GROUP BY "{c["name"]}"
-                        ORDER BY count(*) DESC LIMIT {self.top_number};""")
-            result = cursor.fetchall()
-            ret.append(TextColumn(c["name"], c["sql_type"], [r[0] for r in result], [r[1] for r in result]))
+            check_sql = f"""select max(length("{c["name"]}")) from {self.table_name};"""
+            cursor.execute(check_sql)
+            if cursor.fetchone()[0] > 20:
+                 ret.append(TextColumn(c["name"], c["sql_type"], ["column length is too big"], []))
+            else:
+                cursor.execute(f"""SELECT "{c["name"]}", count(*) from {self.table_name}
+                            GROUP BY "{c["name"]}"
+                            ORDER BY count(*) DESC LIMIT {self.top_number};""")
+                result = cursor.fetchall()
+                ret.append(TextColumn(c["name"], c["sql_type"], [r[0] for r in result], [r[1] for r in result]))
         return ret
 
     def _get_basic_numeric_columns(self, columns: Sequence[Mapping[str, str]]) -> Sequence[NumericColumn]:
