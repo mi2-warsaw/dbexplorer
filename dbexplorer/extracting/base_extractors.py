@@ -13,7 +13,7 @@ class DbExtractor(metaclass=ABCMeta):
     """
 
     def __init__(self, server_address: str, port: int, db_name: str, user: str, password: str, extended: bool,
-                 top_number: int, schema: str, odbc_driver: str):
+                 top_number: int, schema: str, odbc_driver: str, max_text_len: int):
         """
         :param server_address: address of db server (in form: "192.168.1.1")
         :param port: port of the database
@@ -24,7 +24,9 @@ class DbExtractor(metaclass=ABCMeta):
         :param top_number: number of most common values to extract
         :param schema: schema name (may be ignored if db type does not use it)
         :param odbc_driver: driver (may be ignored if db type does not use it)
+        :param max_text_len: max length of text in column
         """
+        self.max_text_len = max_text_len
         self.db_name = db_name
         self.odbc_driver = odbc_driver
         self.db_connection = self.connect(server_address, port, db_name, user, password)
@@ -41,10 +43,10 @@ class DbExtractor(metaclass=ABCMeta):
         ret = []
 
         for table_name in self._get_tables_names():
-            try:
-                ret.append(self._get_table(table_name))
-            except Exception as e:
-                logging.warning(f'Failed to extract info from table {table_name}: ' + str(e))
+            # try:
+            ret.append(self._get_table(table_name))
+            # except Exception as e:
+            #     logging.warning(f'Failed to extract info from table {table_name}: ' + str(e))
 
         return ret
 
@@ -54,7 +56,8 @@ class DbExtractor(metaclass=ABCMeta):
         :param name: name of table to be extracted
         :return: Single table info
         """
-        extractor = self.table_extractor_class(self.db_connection, name, self.extended, self.top_number, self.db_name)
+        extractor = self.table_extractor_class(self.db_connection, name, self.extended, self.top_number, self.db_name,
+                                               self.max_text_len)
         return Table(name, extractor.get_rows_count(), extractor.get_columns())
 
     def extract_to_dict(self) -> Mapping:
@@ -106,19 +109,22 @@ class TableExtractor(metaclass=ABCMeta):
     All already create derived classes follow this structure.
     """
 
-    def __init__(self, db_connection: Any, table_name: str, extended: bool, top_number: int, db_name: str):
+    def __init__(self, db_connection: Any, table_name: str, extended: bool, top_number: int, db_name: str,
+                 max_text_len: int):
         """
         :param db_connection: object of db connection proper for db type
         :param table_name: table name to be extracted
         :param extended:  if the info should be in the extended form
         :param top_number: number of most common values to extract
         :param db_name: database name
+        :param max_text_len: max length of text in column
         """
         self.db_connection = db_connection
         self.table_name = table_name
         self.extended = extended
         self.top_number = top_number
         self.db_name = db_name
+        self.max_text_len = max_text_len
 
     def get_columns(self) -> Sequence[Column]:
         """

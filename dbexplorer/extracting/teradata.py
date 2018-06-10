@@ -3,15 +3,15 @@ from dbexplorer.extracting.base_extractors import DbExtractor, TableExtractor
 import pyodbc
 from collections import defaultdict
 from dbexplorer.extracting.db_types import *
-from dbexplorer.extracting.common import check_result_empty
+from dbexplorer.extracting.common import check_result_empty, TOO_LONG_TEXT_WARNING, get_text_len
 
 
 class TeradataDbExtractor(DbExtractor):
 
     def __init__(self, server_address: str, port: int, db_name: str, user: str, password: str,
-                 extended: bool, top_number: int, schema: str, odbc_driver: str):
+                 extended: bool, top_number: int, schema: str, odbc_driver: str, max_text_len: str):
         super(TeradataDbExtractor, self).__init__(server_address, port, db_name, user, password, extended, top_number,
-                                                  schema, odbc_driver)
+                                                  schema, odbc_driver, max_text_len)
 
     def _get_tables_names(self) -> Sequence[str]:
         qry = f"SELECT TableName FROM dbc.tables WHERE tablekind = 'T' and databasename='{self.db_name}';"
@@ -34,8 +34,10 @@ class TeradataDbExtractor(DbExtractor):
 
 class TeradataTableExtractor(TableExtractor):
 
-    def __init__(self, db_connection: Any, table_name: str, extended: bool, top_number: int, db_name: str):
-        super(TeradataTableExtractor, self).__init__(db_connection, table_name, extended, top_number, db_name)
+    def __init__(self, db_connection: Any, table_name: str, extended: bool, top_number: int, db_name: str,
+                 max_text_len: str):
+        super(TeradataTableExtractor, self).__init__(db_connection, table_name, extended, top_number, db_name,
+                                                     max_text_len)
         self.rows_count = None
 
     def _map_sql_types(self, sql_type: str) -> ColumnType:
@@ -192,15 +194,22 @@ class TeradataTableExtractor(TableExtractor):
             ret.append(Column(c["name"], c["sql_type"]))
         return ret
 
+    def _are_texts_longer_than_max(self, column_name: str) -> bool:
+        max_len = get_text_len(column_name, self.table_name, self.db_connection)
+        return max_len is not None and max_len > self.max_text_len
+
     def _get_basic_text_columns(self, columns: Sequence[Mapping[str, str]]) -> Sequence[TextColumn]:
         ret = []
         cursor = self.db_connection.cursor()
         for c in columns:
-            cursor.execute(f"""SELECT top {self.top_number}  "{c["name"]}", count(*) from {self.db_name}.{self.table_name}
-                        GROUP BY "{c["name"]}"
-                        ORDER BY count(*) DESC ;""")
-            result = cursor.fetchall()
-            ret.append(TextColumn(c["name"], c["sql_type"], [r[0] for r in result], [r[1] for r in result]))
+            if self._are_texts_longer_than_max(c["name"]):
+                ret.append(TextColumn(c["name"], c["sql_type"], [TOO_LONG_TEXT_WARNING], []))
+            else:
+                cursor.execute(f"""SELECT top {self.top_number}  "{c["name"]}", count(*) from {self.db_name}.{self.table_name}
+                            GROUP BY "{c["name"]}"
+                            ORDER BY count(*) DESC ;""")
+                result = cursor.fetchall()
+                ret.append(TextColumn(c["name"], c["sql_type"], [r[0] for r in result], [r[1] for r in result]))
         return ret
 
     def _get_basic_numeric_columns(self, columns: Sequence[Mapping[str, str]]) -> Sequence[NumericColumn]:
@@ -273,9 +282,12 @@ class TeradataTableExtractor(TableExtractor):
             cursor.execute(f"""select count(*) from {self.db_name}.{self.table_name} where "{c["name"]}" is NULL;""")
             nulls_count = cursor.fetchone()[0]
 
-            cursor.execute(f"""SELECT COUNT(*) FROM 
-                            (SELECT DISTINCT "{c["name"]}" FROM {self.db_name}.{self.table_name}) AS temp;""")
-            distinct_count = cursor.fetchone()[0]
+            if self._map_sql_types(c["sql_type"]) == ColumnType.TEXT and self._are_texts_longer_than_max(c["name"]):
+                distinct_count = None
+            else:
+                cursor.execute(f"""SELECT COUNT(*) FROM 
+                                (SELECT DISTINCT "{c["name"]}" FROM {self.db_name}.{self.table_name}) AS temp;""")
+                distinct_count = cursor.fetchone()[0]
 
             ret.append(ExtendedNoneTypeColumn(c["name"],
                                               c["sql_type"],

@@ -17,6 +17,8 @@ parser.add_argument('-t', '--database_type', help='Database type (Postgres, MySQ
                     required=True)
 parser.add_argument('-o', '--output', help='Output HTML path', type=str, required=True)
 parser.add_argument('-top', '--top_number', help='Number of desired most frequent values', type=int, default=5)
+parser.add_argument('-m', '--max_text_length',
+                    help='Max length of text in given column that will be taken into account', type=int, default=100)
 parser.add_argument('-sc', '--schema', help='Schema for postgres', type=str, default='public')
 parser.add_argument('-d', '--odbc_driver', help='ODBC driver name for teradata', type=str)
 
@@ -48,7 +50,9 @@ def main():
                           extended=args.extended,
                           top_number=args.top_number,
                           schema=args.schema,
-                          odbc_driver=args.odbc_driver)
+                          odbc_driver=args.odbc_driver,
+                          max_text_len=args.max_text_length,
+                          )
     visualizer = DbVisualizer(extractor.extract_to_dict(), args.output)
     visualizer.generate_report()
 

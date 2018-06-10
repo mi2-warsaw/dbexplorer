@@ -48,6 +48,8 @@ Mysql and Teradata),
 * -o (--output) — output file path,
 * -sc (--schema) — schema name (only postgres, default: public),
 * -d (--odbc_driver) — odbc driver name for Teradata connection (only TeraData).
+* -top (--top_number) — number of desired most frequent values (default: 5)
+* -m (--max_text_length) — max length of text in given column that will allow to summarise top values and distinct count (default: 100)
 
 #### Example commands
 
