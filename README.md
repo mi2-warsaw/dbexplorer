@@ -19,12 +19,12 @@ Generated report has a searching feature which allows to find tables or columns 
 
 #### Further information
 
-Full specification and more detailed description of summarization features (in Polish) can be found in [this file](https://github.com/ppollakr/dbexplorer/blob/master/docs/Specyfikacja%20wymaga%C5%84.pdf).
+Full specification and more detailed description of summarization features (in Polish) can be found in [this file](https://github.com/mi2-warsaw/dbexplorer/blob/master/docs/Specyfikacja%20wymaga%C5%84.pdf).
 
 
 ## Installation
 
-1. Clone repository: `git clone https://github.com/ppollakr/dbexplorer.git`
+1. Clone repository: `git clone https://github.com/mi2-warsaw/dbexplorer.git`
 2. Change to directory: `cd dbexplorer`
 3. Install package: `pip install .`
 4. Run program with proper arguments: `dbexplorer -s 192.2.3.4 -p 5432 -n dvdrental -u dbadmin -pass password -t postgres -o out.html`
